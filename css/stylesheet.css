@@ -1,0 +1,269 @@
+/* ---------------------
+стили для приборной панели
+--------------------- */
+body {
+    padding-top: 60px;
+}
+
+.sidebar {
+    background-color: #f0f5f9;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    padding: 20px;
+    width: 250px;
+    z-index: 100;
+}
+
+.content {
+    margin-left: 250px;
+    padding: 20px;
+    display: none; /* скрывать разделы по умолчанию */
+}
+
+/* показать раздел «content-home» как стартовую страницу */
+#content-home {
+    display: block;
+}
+
+
+/* для оповещений */
+.icon-text-container {
+  display: flex;
+  align-items: flex-start;
+}
+.icon-text-container i {
+  margin-right: 10px; /* Отрегулируйте допуск по мере необходимости */
+}
+.text-container p {
+  margin: 0;
+}
+
+/* -----------------
+стили для линейной диаграммы
+----------------- */
+
+.chart__grid {
+    stroke: #e7eef4;
+    opacity: 0.3;
+  }
+  svg {
+    font: 10px sans-serif;
+  }
+  .area {
+    fill: rgba(255,100,100,0.5);
+    clip-path: url("#clip");
+  }
+  .axis path,
+  .axis line {
+    fill: none;
+    stroke: #e7eef4;
+    shape-rendering: crispEdges;
+  }
+  .brush .extent {
+    stroke: #fff;
+    fill-opacity: 0.125;
+    shape-rendering: crispEdges;
+  }
+  /*Новый*/
+  .chart text {
+    fill: #7f8faf;
+  }
+  .chart__line {
+    fill: none;
+    stroke-width: 1.2px;
+    clip-path: url("#clip");
+  }
+  .chart__eff--focus {
+    stroke-width: 2px;
+    stroke: #2980b9;
+  }
+  .chart__erw--focus {
+    stroke-width: 2px;
+    stroke: #f00;
+    opacity: 0.3;
+  }
+  .chart__ma--focus {
+    stroke-width: 2px;
+    stroke: #2980b9;
+    opacity: 0.6;
+  }
+  .chart__overlay {
+    opacity: 0;
+    pointer-events: all;
+  }
+  .chart__tooltip--eff {
+    fill: none;
+    stroke: #2980b9;
+  }
+  .chart__tooltip--erw {
+    fill: none;
+    stroke: #f00;
+  }
+  .chart__bars {
+    fill: #99c5df;
+    opacity: 1;
+  }
+  .chart__range-selection text {
+    cursor: pointer;
+    text-decoration: underline;
+    fill: #2980b9;
+  }
+  .chart__axis--context text {
+    fill: #2980b9;
+    opacity: 0.6;
+  }
+  .chart__axis--context .tick:nth-child(odd) {
+    display: none;
+  }
+  .chart__axis--context path,
+  .chart__axis--context line {
+    display: none;
+  }
+  .chart__area {
+    fill: #e6f6fe;
+    stroke: #3587bc;
+  }
+  .extent {
+    fill: #e2f0ff;
+    fill: #3587bc;
+    fill-opacity: 0.3;
+  }
+  .y.axis .tick text {
+    text-anchor: start !important;
+    fill: #7f8faf;
+  }
+  .y.axis .tick line {
+    display: none;
+  }
+  .y.axis path {
+    display: none;
+  }
+
+/* ------------------------------
+стиль выбора опций диаграммы
+------------------------------ */
+
+.checkbox-menu li label {
+  display: block;
+  padding: 3px 10px;
+  clear: both;
+  font-weight: normal;
+  line-height: 1.42857143;
+  color: #333;
+  white-space: nowrap;
+  margin:0;
+  transition: background-color .4s ease;
+}
+.checkbox-menu li input {
+  margin: 0px 5px;
+  top: 2px;
+  position: relative;
+}
+
+.checkbox-menu li.active label {
+  background-color: #cbcbff;
+  font-weight:bold;
+}
+
+.checkbox-menu li label:hover,
+.checkbox-menu li label:focus {
+  background-color: #f5f5f5;
+}
+
+.checkbox-menu li.active label:hover,
+.checkbox-menu li.active label:focus {
+  background-color: #b8b8ff;
+}
+
+#wrapper {
+  display: flex;
+}
+
+#left {
+  flex: 0 0 65%;
+}
+
+#right {
+  flex: 1;
+}
+
+.radio-menu li label {
+  display: block;
+  padding: 3px 10px;
+  clear: both;
+  font-weight: normal;
+  line-height: 1.42857143;
+  color: #333;
+  white-space: nowrap;
+  margin:0;
+  transition: background-color .4s ease;
+}
+
+/* -----------------------
+стиль тепловой карты календаря
+----------------------- */
+.month {
+  fill: none;
+  stroke: #000;
+  stroke-width: 2px;
+}
+.day {
+  fill: #fff;
+  stroke: none;
+}
+text    {
+  font-family:sans-serif;
+  font-size:1.5em;
+}
+.dayLabel   {
+  fill:#aaa;
+  font-size:0.8em;
+}
+.monthLabel {
+  text-anchor:middle;
+  font-size:0.8em;
+  fill:#aaa;
+}
+.yearLabel  {
+  fill:#aaa;
+  font-size:1.2em;
+}
+
+.key    {font-size:0.5em;}
+
+/* ----------------
+стиль для гистограммы
+---------------- */
+.bar{
+  fill: #7f8faf;
+  fill-opacity: 0.6;
+}
+
+.bar:hover{
+  fill: #2980b9;
+}
+
+#tooltip {
+  background-color: #ecf0f1;
+  visibility: hidden;
+  position: absolute;
+  opacity: 0.8;
+  padding: 10px;
+  vertical-align: middle;
+  border-radius: 5px;
+  text-align: center;
+  width: 180px;
+}
+
+#title {
+  text-anchor: middle;
+  font-size: 22px;
+}
+
+.label {
+  text-anchor: middle;
+} 
+
+/* размещение кнопки */

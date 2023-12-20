@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- Обязательные мета-теги -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Мониторинг энергопотребления</title>    
+
+    <!-- потрясающие шрифты -->
+    <link href="/rsc/fontawesome/css/fontawesome.css" rel="stylesheet">
+    <link href="/rsc/fontawesome/css/brands.css" rel="stylesheet">
+    <link href="/rsc/fontawesome/css/solid.css" rel="stylesheet">
+
+    <!-- Созданное CSS -->
+    <link href="css/stylesheet.css" rel="stylesheet">
+
+    <!-- Bootstrap, jquery, панели -->
+    <link href="rsc/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <script src="rsc/jquery/jquery-3.7.0.min.js"></script>
+    <script src="https://unpkg.com/@popperjs/core@2"></script>
+    <script src="rsc/bootstrap/js/bootstrap.min.js"></script>
+
+    <!-- D3.js -->
+    <script src="rsc/d3/d3.min.js"></script>
+
+    <!-- js, который используется для управления поведением панели мониторинга. -->
+    <script src="js/dashboard.js"></script>
+    
+</head>
+
+<body>
+    <!-- боковая панель -->
+    <div class="sidebar">
+        <h2>Энерго монитор СПбГЭТУ "ЛЭТИ"</h2>
+        <ul class="nav flex-column mt-4">
+            <li class="nav-item">
+                <a class="nav-link active" href="#" onclick="showContent('content-home')"><i class="fa-solid fa-house"></i> Главная</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#" onclick="showContent('content-dashboard1')"><i class="fa-solid fa-chart-line"></i> Анализ тенденций</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#" onclick="showContent('content-dashboard2')" id="tab-calendar"><i class="fa-solid fa-calendar-days"></i> Анализ ежедневных закономерностей</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#" onclick="showContent('content-dashboard3')"><i class="fa-solid fa-chart-column"></i> Анализ расхождений</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#" onclick="showContent('content-details')"><i class="fa-solid fa-circle-info"></i> Детали</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#" onclick="showContent('content-about')"><i class="fa-solid fa-address-card"></i> О странице</a>
+            </li>
+        </ul>
+    </div>
+    <!-- main -->
+    <div class="content" id="content-home">
+        <h1>Энергетический монитор: СПбГЭТУ "ЛЭТИ"</h1>
+        
+        <!-- Четыре секции с графиками -->
+        <div class="row d-flex align-items-stretch">
+            <div class="col-lg-3 col-md-12">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5>Последнее наблюдение:</h5>
+                        <h1 id="energy-consumption-lastDay"></h1>
+                        <p id="energy-consumption-diff"></p>
+                        </br>
+                        <h5>В среднем за семь дней:</h5>
+                        <h1 id="energy-consumption-MA"></h1>
+                        </br>
+                        <h5>Общее энергопотребление за последние 6 месяцев:</h5>
+                        <h1 id="energy-consumption-sum"></h1>
+                        
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-9 col-md-12">
+                <div class="card h-100" id="card-lineplot-preview">
+                    <div class="card-body">
+                        <h4 class="card-title">Ежедневное потребление электроэнергии (последние 6 месяцев)</h4>
+                        <div id="lineplot-preview"></div>
+                    </div>
+                    <br>
+                </div>
+            </div>
+        </div>
+        <br>
+        <div class="row d-flex align-items-stretch">
+            <div class="col-lg-6 col-md-12">
+                <div class="card h-100" id="card-barchart-preview">
+                    <div class="card-body">
+                        <h4 class="card-title">Эффективная и ожидаемая дневная разница (за последние 6 месяцев)</h4>
+                        <div id="barchart-preview"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-12">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h4 class="card-title">Ежедневный шаблон</h4>
+                        <div id="calendarheatmap-preview"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="content" id="content-dashboard1">
+        <h1>Анализ тенденций с течением времени</h1>
+        <p>
+            Тенденции можно определить с помощью следующего линейного графика.
+            визуально проанализировать потребление электроэнергии в кантоне Базель-Штадт.
+            Особенно, если посмотреть на эффективное ежедневное потребление электроэнергии.
+            Частота может отображаться как регулярные еженедельные колебания.
+            видимые, которые показывают, что по выходным их обычно меньше
+            Электричество потребляется. В основном наблюдается отрицательная динамика за весь период.
+            наблюдаемый. Причину такого снижения еще предстоит выяснить.
+            Факторы могут включать все более повышающиеся температуры или более эффективное
+            быть электронными устройствами. Для получения дополнительной информации об ожидаемом
+             энергопотреблении нажмите на <span><a class="nav-link" href="#" onclick="showContent('content-details')" style="color:blue; display: inline-block">детали</a></span>.
+            </br></br>
+            Две кнопки позволяют выбрать частоту отображаемых данных.
+            а также различные варианты создания линейной схемы по желанию
+            адаптировать. В основе лежат ежедневные данные, если изменить частоту.
+            потребление электроэнергии в соответствующем периоде суммируется и через
+            делит количество дней в соответствующем месяце или году. Означает
+            Нажмите и перетащите нижнюю часть диаграммы, чтобы отобразить
+            период можно изменить. Диаграмма площади показывает эффективную
+            Потребляемая мощность на выбранной частоте за весь период.
+        </p>
+        <div id="wrapper">
+            <div class="dropdown">
+                <button class="btn btn-default dropdown-toggle" type="button" 
+                        id="dropdownMenu1" data-bs-toggle="dropdown" 
+                        aria-haspopup="true" aria-expanded="true">
+                        <i class="fa-regular fa-clock"></i> Частота передачи данных
+                <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu radio-menu allow-focus" aria-labelledby="dropdownMenu1">
+                <li>
+                    <label>
+                    <input type="radio" name="options-lineplot" id="y-lineplot" value="y"> ежегодно
+                    </label>
+                </li>
+                <li>
+                    <label>
+                    <input type="radio" name="options-lineplot" id="m-lineplot" checked value="m"> ежемесячно
+                    </label>
+                </li>
+                <li>
+                    <label>
+                    <input type="radio" name="options-lineplot" id="d-lineplot" value="d"> ежедневно
+                    </label>
+                </li>
+                </ul>
+            </div>
+            
+                    
+            <div class="dropdown">
+                <button class="btn btn-default dropdown-toggle" type="button" 
+                        id="dropdownMenu2" data-bs-toggle="dropdown" 
+                        aria-haspopup="true" aria-expanded="true">
+                <i class="fa fa-gear"></i> Параметры
+                <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu checkbox-menu allow-focus" aria-labelledby="dropdownMenu2">
+
+                <li>
+                    <label>
+                    <input type="checkbox" name="options-lineplot" id="showEff" checked> показать эффективное энергопотребление
+                    </label>
+                </li>
+
+                <li>
+                    <label>
+                    <input type="checkbox" name="options-lineplot" id="showErw" checked> Показать ожидаемое энергопотребление
+                    </label>
+                </li>
+
+                <li>
+                    <label>
+                        <input type="checkbox" name="options-lineplot" id="showMA">
+                            Показать скользящее среднее <i class="fa-solid fa-circle-info" data-bs-toggle="tooltip"
+                            title="Скользящее среднее показывает среднее энергопотребление за последние семь единиц времени."></i>
+                    </label>
+                </li>
+
+                <li>
+                    <label>
+                        <input type="checkbox" name="options-lineplot" id="showCI">
+                            Показать скользящее среднее <i class="fa-solid fa-circle-info" data-bs-toggle="tooltip"
+                            title="Интервал, в котором с вероятностью 95% можно предположить прогнозируемое эффективное потребление электроэнергии на основе статистической модели."></i>
+                    </label>
+                </li>
+
+                <li>
+                    <label>
+                        <input type="checkbox" name="options-lineplot" id="dynY" checked> Динамическая ось Y
+                    </label>
+                </li>
+        
+                </ul>
+            </div>
+        </div>
+
+        <div id="lineplot"></div>
+
+        <div class="alert alert-warning" role="alert" id="dynY-alert">
+            <div class="icon-text-container">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+                <div class="text-container">
+                    <p>
+                        Ось Y является динамической и поэтому не начинается с 0. Это делает тенденции более заметными,
+                        однако может исказить воспринимаемую силу тренда. Вы можете использовать опции
+                        динамическую ось Y можно деактивировать, что означает, что она начинается с 0.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="content" id="content-dashboard2">
+        <h1>Анализ ежедневных закономерностей</h1>
+        <p>
+            Следующая тепловая карта календаря позволяет провести визуальный анализ.
+            закономерностей в ежедневном потреблении электроэнергии в течение недели и более
+            год. Например, видно, что энергопотребление
+            В течение недели выше, чем в выходные. Бывают и праздники
+            заметно благодаря более низкому энергопотреблению. Если ты оставишь больше
+            Прошлые годы также покажут, что
+            потребление электроэнергии за последние годы снизилось. Причина для
+            Это уменьшение все равно придется определить, например, факторы могут
+            повышенные температуры или более эффективные электронные устройства.
+            </br></br>
+            Градацию отображаемых категорий можно настроить с помощью текстового поля.
+            становиться. Если навести указатель мыши на конкретный день, отобразится действующий.
+            Показана потребляемая мощность.
+        </p>
+        <div style="float:right; margin-right: 10%;">
+            <form class="form-floating" >
+                <input type="number" class="form-control" id="nCategories" placeholder="Количество категорий" value="8" min="1" name="options-calendar-categories">
+                <label for="nCategories">Количество категорий</label>
+            </form>
+        </div>
+        <div style="width: 10%"></div>
+        <div id="wrapper">
+            <div class="dropdown">
+                <button class="btn btn-default dropdown-toggle" type="button" 
+                        id="dropdownMenu3" data-bs-toggle="dropdown" 
+                        aria-haspopup="true" aria-expanded="true">
+                    <i class="fa-solid fa-hourglass-start"></i> Год начала: <span id="selected-start-year"></span>
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu checkbox-menu allow-focus" aria-labelledby="dropdownMenu3">
+    
+                <li>
+                    <label>
+                        <input type="radio" name="options-calendar-sy" id="start-year-2012" value="2012"> 2012
+                    </label>
+                </li>
+                <li>
+                    <label>
+                        <input type="radio" name="options-calendar-sy" id="start-year-2013" value="2013"> 2013
+                    </label>
+                </li>
+                <li>
+                    <label>
+                        <input type="radio" name="options-calendar-sy" id="start-year-2014" value="2014"> 2014
+                    </label>
+                </li>
+                <li>
+                    <label>
+                        <input type="radio" name="options-calendar-sy" id="start-year-2015" value="2015"> 2015
+                    </label>
+                </li>
+                <li>
+                    <label>
+                        <input type="radio" name="options-calendar-sy" id="start-year-2016" value="2016"> 2016
+                    </label>
+                </li>
+                <li>
+                    <label>
+                        <input type="radio" name="options-calendar-sy" id="start-year-2017" value="2017"> 2017
+                    </label>
+                </li>
+                <li>
+                    <label>
+                        <input type="radio" name="options-calendar-sy" id="start-year-2018" value="2018"> 2018
+                    </label>
+                </li>
+                <li>
+                    <label>
+                        <input type="radio" name="options-calendar-sy" id="start-year-2019" value="2019"> 2019
+                    </label>
+                </li>
+                <li>
+                    <label>
+                        <input type="radio" name="options-calendar-sy" id="start-year-2020" value="2020"> 2020
+                    </label>
+                </li>
+                <li>
+                    <label>
+                        <input type="radio" name="options-calendar-sy" id="start-year-2021" value="2021"> 2021
+                    </label>
+                </li>
+                <li>
+                    <label>
+                        <input type="radio" name="options-calendar-sy" id="start-year-2022" value="2022" checked> 2022
+                    </label>
+                </li>
+                <li>
+                    <label>
+                        <input type="radio" name="options-calendar-sy" id="start-year-2023" value="2023"> 2023
+                    </label>
+                </li>
+                
+                </ul>
+            </div>
+            <div class="dropdown">
+                <button class="btn btn-default dropdown-toggle" type="button" 
+                        id="dropdownMenu4" data-bs-toggle="dropdown" 
+                        aria-haspopup="true" aria-expanded="true">
+                    <i class="fa-solid fa-hourglass-end"></i> Конец года: <span id="selected-end-year"></span>
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu checkbox-menu allow-focus" aria-labelledby="dropdownMenu4">
+    
+                    <li>
+                        <label>
+                            <input type="radio" name="options-calendar-ey" id="end-year-2012" value="2012"> 2012
+                        </label>
+                    </li>
+                    <li>
+                        <label>
+                            <input type="radio" name="options-calendar-ey" id="end-year-2013" value="2013"> 2013
+                        </label>
+                    </li>
+                    <li>
+                        <label>
+                            <input type="radio" name="options-calendar-ey" id="end-year-2014" value="2014"> 2014
+                        </label>
+                    </li>
+                    <li>
+                        <label>
+                            <input type="radio" name="options-calendar-ey" id="end-year-2015" value="2015"> 2015
+                        </label>
+                    </li>
+                    <li>
+                        <label>
+                            <input type="radio" name="options-calendar-ey" id="end-year-2016" value="2016"> 2016
+                        </label>
+                    </li>
+                    <li>
+                        <label>
+                            <input type="radio" name="options-calendar-ey" id="end-year-2017" value="2017"> 2017
+                        </label>
+                    </li>
+                    <li>
+                        <label>
+                            <input type="radio" name="options-calendar-ey" id="end-year-2018" value="2018"> 2018
+                        </label>
+                    </li>
+                    <li>
+                        <label>
+                            <input type="radio" name="options-calendar-ey" id="end-year-2019" value="2019"> 2019
+                        </label>
+                    </li>
+                    <li>
+                        <label>
+                            <input type="radio" name="options-calendar-ey" id="end-year-2020" value="2020"> 2020
+                        </label>
+                    </li>
+                    <li>
+                        <label>
+                            <input type="radio" name="options-calendar-ey" id="end-year-2021" value="2021"> 2021
+                        </label>
+                    </li>
+                    <li>
+                        <label>
+                            <input type="radio" name="options-calendar-ey" id="end-year-2022" value="2022"> 2022
+                        </label>
+                    </li>
+                    <li>
+                        <label>
+                            <input type="radio" name="options-calendar-ey" id="end-year-2023" value="2023" checked> 2023
+                        </label>
+                    </li>
+                
+                </ul>
+            </div>
+        </div>
+        <div id="calendarheatmap"></div>
+    </div>
+    
+    <div class="content" id="content-dashboard3">
+        <h1>Анализ разницы между эффективным и ожидаемым энергопотреблением</h1>
+        <p>
+            Гистограмма показывает разницу между фактически измеренным энергопотреблением
+            и ожидаемое потребление электроэнергии, рассчитанное с использованием статистической модели.
+            Потребление электроэнергии показано с поправкой на погоду. Помимо метеорологического
+            Данные также учитывают, приходится ли время измерения на праздники, торжества,
+            рабочие дни или выходные, а также есть ли в Швейцарии пандемия Covid-19.
+            находился в изоляции. Таким образом, статистическая модель обеспечивает модель, основанную на погоде и
+            ожидаемое потребление электроэнергии в соответствующий день. Изменения в потреблении электроэнергии
+            Например, в модель не включены изменения в поведении населения.
+            Таким образом, коммуникационную кампанию федерального правительства по поводу дефицита энергии можно рассматривать как негативную.
+            Разницу можно увидеть на гистограмме ниже, так как это связано с погодой и
+            Классификация ожидаемого потребления электроэнергии в соответствующий день должна быть выше
+            чем эффективное энергопотребление. Однако это означает, что за это время ни
+            Другие факторы влияют на потребление электроэнергии (положительно или отрицательно). Для дополнительной информации
+            ожидаемое энергопотребление см.
+            <span><a class="nav-link" href="#" onclick="showContent('content-details')" style="color:blue; display: inline-block">детали</a></span>.
+        </p>
+        <div id="wrapper">
+            <div class="dropdown">
+                <button class="btn btn-default dropdown-toggle" type="button" 
+                        id="dropdownMenu5" data-bs-toggle="dropdown" 
+                        aria-haspopup="true" aria-expanded="true">
+                    <i class="fa-solid fa-hourglass-start"></i> Год начала: <span id="barchart-selected-start-year"></span>
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu checkbox-menu allow-focus" aria-labelledby="dropdownMenu5">
+    
+                <li>
+                    <label>
+                        <input type="radio" name="options-barchart-sy" id="barchart-start-year-2012" value="2012" checked> 2012
+                    </label>
+                </li>
+                <li>
+                    <label>
+                        <input type="radio" name="options-barchart-sy" id="barchart-start-year-2013" value="2013"> 2013
+                    </label>
+                </li>
+                <li>
+                    <label>
+                        <input type="radio" name="options-barchart-sy" id="barchart-start-year-2014" value="2014"> 2014
+                    </label>
+                </li>
+                <li>
+                    <label>
+                        <input type="radio" name="options-barchart-sy" id="barchart-start-year-2015" value="2015"> 2015
+                    </label>
+                </li>
+                <li>
+                    <label>
+                        <input type="radio" name="options-barchart-sy" id="barchart-start-year-2016" value="2016"> 2016
+                    </label>
+                </li>
+                <li>
+                    <label>
+                        <input type="radio" name="options-barchart-sy" id="barchart-start-year-2017" value="2017"> 2017
+                    </label>
+                </li>
+                <li>
+                    <label>
+                        <input type="radio" name="options-barchart-sy" id="barchart-start-year-2018" value="2018"> 2018
+                    </label>
+                </li>
+                <li>
+                    <label>
+                        <input type="radio" name="options-barchart-sy" id="barchart-start-year-2019" value="2019"> 2019
+                    </label>
+                </li>
+                <li>
+                    <label>
+                        <input type="radio" name="options-barchart-sy" id="barchart-start-year-2020" value="2020"> 2020
+                    </label>
+                </li>
+                <li>
+                    <label>
+                        <input type="radio" name="options-barchart-sy" id="barchart-start-year-2021" value="2021"> 2021
+                    </label>
+                </li>
+                <li>
+                    <label>
+                        <input type="radio" name="options-barchart-sy" id="barchart-start-year-2022" value="2022"> 2022
+                    </label>
+                </li>
+                <li>
+                    <label>
+                        <input type="radio" name="options-barchart-sy" id="barchart-start-year-2023" value="2023"> 2023
+                    </label>
+                </li>
+                
+                </ul>
+            </div>
+            <div class="dropdown">
+                <button class="btn btn-default dropdown-toggle" type="button" 
+                        id="dropdownMenu4" data-bs-toggle="dropdown" 
+                        aria-haspopup="true" aria-expanded="true">
+                    <i class="fa-solid fa-hourglass-end"></i> Конец года: <span id="barchart-selected-end-year"></span>
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu checkbox-menu allow-focus" aria-labelledby="dropdownMenu4">
+    
+                    <li>
+                        <label>
+                            <input type="radio" name="options-barchart-ey" id="barchart-end-year-2012" value="2012"> 2012
+                        </label>
+                    </li>
+                    <li>
+                        <label>
+                            <input type="radio" name="options-barchart-ey" id="barchart-end-year-2013" value="2013"> 2013
+                        </label>
+                    </li>
+                    <li>
+                        <label>
+                            <input type="radio" name="options-barchart-ey" id="barchart-end-year-2014" value="2014"> 2014
+                        </label>
+                    </li>
+                    <li>
+                        <label>
+                            <input type="radio" name="options-barchart-ey" id="barchart-end-year-2015" value="2015"> 2015
+                        </label>
+                    </li>
+                    <li>
+                        <label>
+                            <input type="radio" name="options-barchart-ey" id="barchart-end-year-2016" value="2016"> 2016
+                        </label>
+                    </li>
+                    <li>
+                        <label>
+                            <input type="radio" name="options-barchart-ey" id="barchart-end-year-2017" value="2017"> 2017
+                        </label>
+                    </li>
+                    <li>
+                        <label>
+                            <input type="radio" name="options-barchart-ey" id="barchart-end-year-2018" value="2018"> 2018
+                        </label>
+                    </li>
+                    <li>
+                        <label>
+                            <input type="radio" name="options-barchart-ey" id="barchart-end-year-2019" value="2019"> 2019
+                        </label>
+                    </li>
+                    <li>
+                        <label>
+                            <input type="radio" name="options-barchart-ey" id="barchart-end-year-2020" value="2020"> 2020
+                        </label>
+                    </li>
+                    <li>
+                        <label>
+                            <input type="radio" name="options-barchart-ey" id="barchart-end-year-2021" value="2021"> 2021
+                        </label>
+                    </li>
+                    <li>
+                        <label>
+                            <input type="radio" name="options-barchart-ey" id="barchart-end-year-2022" value="2022"> 2022
+                        </label>
+                    </li>
+                    <li>
+                        <label>
+                            <input type="radio" name="options-barchart-ey" id="barchart-end-year-2023" value="2023" checked> 2023
+                        </label>
+                    </li>
+                
+                </ul>
+            </div>
+
+            <div class="dropdown">
+                <button class="btn btn-default dropdown-toggle" type="button" 
+                        id="dropdownMenu1" data-bs-toggle="dropdown" 
+                        aria-haspopup="true" aria-expanded="true">
+                        <i class="fa-regular fa-clock"></i> Частота передачи данных
+                <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu radio-menu allow-focus" aria-labelledby="dropdownMenu1">
+                <li>
+                    <label>
+                    <input type="radio" name="options-barchart-freq" id="y-barchart" value="y"> ежегодно
+                    </label>
+                </li>
+                <li>
+                    <label>
+                    <input type="radio" name="options-barchart-freq" id="m-barchart" checked value="m"> ежемесячно
+                    </label>
+                </li>
+                <li>
+                    <label>
+                    <input type="radio" name="options-barchart-freq" id="d-barchart" value="d"> ежедневно
+                    </label>
+                </li>
+                </ul>
+            </div>  
+            
+            <div class="dropdown">
+                <button class="btn btn-default dropdown-toggle" type="button" 
+                        id="dropdownMenu2" data-bs-toggle="dropdown" 
+                        aria-haspopup="true" aria-expanded="true">
+                <i class="fa fa-gear"></i> Параметры
+                <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu radio-menu allow-focus" aria-labelledby="dropdownMenu2">
+
+                <li>
+                    <label>
+                        <input type="radio" name="options-barchart" id="absDiff" checked> Абсолютная разница
+                    </label>
+                </li>
+
+                <li>
+                    <label>
+                        <input type="radio" name="options-barchart" id="relDiff"> Относительная разница
+                    </label>
+                </li>
+                
+                </ul>
+            </div>
+        
+            
+        </div>
+        <div id="barchart"></div>
+        <p>
+            Могут наблюдаться отрицательные различия между эффективным и ожидаемым потреблением электроэнергии, что оказывает влияние
+            кампания может указывать на потребление электроэнергии. Чтобы иметь возможность определить и измерить фактический эффект,
+            Однако необходимы дальнейшие анализы. Кроме того, аналогичные негативные различия можно наблюдать и в более ранние годы.
+        </p>
+    </div>
+
+    <div class="content" id="content-details">
+        <h3>Цель этого приложения</h3>
+        <p>
+            Цель этого приложения — предоставить пример того, как публикуются или передаются открытые электроэнергетические данные.
+            Критика, часто высказываемая «потребителями данных», заключается в том, что ЭЭД можно использовать без специальных данных.
+            Таким образом, инструменты визуализации и анализа могут помочь получить представление о текущем электропотреблении корпусов.
+            Такие инструменты, как информационные панели, можно использовать для предоставления «потребителям данных» всей необходимой контекстной информации.
+            Соответствующая информация и помощь для данных, которые трудно интерпретировать или которые имеют повышенную вероятность неправильной интерпретации
+            быть предложено. Предоставление данных в форме, которая в идеале не имеет или имеет низкие барьеры для входа и
+             для успешной демократизации данных необходимо избегать распространения дезинформации.
+        </p>
+        </br>
+        <h3>Следующая информация</h3>
+        <div class="accordion" id="accordionExample">
+            <div class="accordion-item">
+              <h2 class="accordion-header" id="headingOne">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                    Откуда берется ожидаемое энергопотребление?
+                </button>
+              </h2>
+              <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                <div class="accordion-body">
+                    Ожидаемое энергопотребление основано на ежедневных данных о энергопотреблении корпусов "ЛЭТИ".
+                    Поскольку энергопотребление зависит от погоды, то оно отображается с поправкой на погоду. Модель также учитывает
+                    будь то праздники, праздничные дни, рабочие дни или выходные дни. 
+                    </br></br>
+                </div>
+              </div>
+            </div>
+            <div class="accordion-item">
+              <h2 class="accordion-header" id="headingTwo">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                    Что такое КилоВатт-час (КВтч)?
+                </button>
+              </h2>
+              <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
+                <div class="accordion-body">
+                    Киловатт-час (кВтч) — единица энергии. Вы можете найти это устройство в своем счете за электроэнергию. 
+                    Устройство, которому требуется мощность 1000 Вт (например, фен), за один час потребляет 1 киловатт-час электроэнергии.
+                    Эффективный холодильник класса эффективности D (ранее A) с морозильной камерой потребляет около 120 киловатт-часов в год.
+                    </br></br>
+                    Электричество продается в мегаватт-часах, гигаваттах или тераватт-часах: 1000 киловатт-часов равны 1 мегаватт-часу (МВтч), 1000 мегаватт-часам.
+                    приравняется 1 гигаватт-час, а 1000 гигаватт-часов (ГВтч) — один тераватт-час (ТВтч). 
+                    </br></br>
+                </div>
+              </div>
+            </div>
+            <div class="accordion-item">
+              <h2 class="accordion-header" id="headingThree">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                    А как насчет остальной части корпусов "ЛЭТИ"?
+                </button>
+              </h2>
+              <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
+                <div class="accordion-body">
+                    РОССЕТИ управляет информационной панелью, на которой собраны наиболее важные ключевые данные о текущей ситуации с энергоснабжением Петроградского района, СПб. Данные
+                     предложенные здесь явяются показателем энергопотребления всех корпусов "ЛЭТИ" за промежуток времени 24 часа. Остальные данные являются примерными, и по ходу разработки 
+                     всей системы, в будущем можно реализовать данную структуру целиком и полностью для всех корпусов. К сожалению в открытых источниках невозможно найти данные о текущем 
+                     энергопотреблении района, или организаций в РФ.
+                    </br>
+                   
+                    </br></br>
+                    
+                    </br>
+                   
+                </div>
+              </div>
+            </div>
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingFour">
+                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                    об этом проекте
+                  </button>
+                </h2>
+                <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour" data-bs-parent="#accordionExample">
+                  <div class="accordion-body">
+                        Это приложение было создано в рамках мероприятия «Реализация проекта о мониторинге электроэнергии корпусов "ЛЭТИ"». Целью была веб-визуализация
+                        используя JavaScript, особенно D3.js. В рамках этого мероприятия я впервые использовал JavaScript,
+                        поэтому в приложении все еще есть некоторые недостатки. В коде есть много возможностей для улучшения, особенно в его структуре.
+                        Это связано с тем, что я впервые использовал JavaScript, а также с постоянным развитием и адаптацией моих идей.
+                        Цели при создании приложения <i class="fa-regular fa-face-smile"></i>
+                        </br></br>
+                        Дополнительная информация об используемом коде и ресурсах, а также обо всем, что создано для этой информационной панели.
+                        Исходный код доступен<a href="https://github.com/-----------------------" target="_blank">GitHub <i class="fa-brands fa-github"></i></a>
+                        доступен открытый исходный код.
+                  </div>
+                </div>
+              </div>
+          </div>
+      </div>
+
+    </div>
+
+    <div class="content" id="content-about">
+        <div class="row d-flex align-items-stretch">
+            <div class="col-lg-6 col-md-12">
+                <div class="card h-100">
+                    <div class="card-header">
+                        <i class="fa-solid fa-table"></i> Используемый источник данных
+                    </div>
+                    <div class="card-body">
+                        <h3 class="card-title">Эффективное и ожидаемое ежедневное энергопотребление</h3>
+                        <p class="card-text">
+                            Этот набор данных содержит данные о ежедневном потреблении электроэнергии, а также данные с использованием модели
+                            Ожидаемое потребление электроэнергии рассчитывается на основе календарного дня и погоды.
+                        </p>
+                        <p class="card-text"></p>
+                        Потребление электроэнергии представляет собой сумму электроэнергии, потребляемой ежедневно в кантоне Базель-Штадт.
+                        извлекается из сети, включая потери в сети. Ежедневное потребление электроэнергии определяется как:
+                        Сумма отчетного потребления электроэнергии за четверть часа из источника данных 1.
+                        </p>
+                        <p class="card-text">
+                            Электрическая энергия, потребляемая локально непосредственно на месте производства (например, от фотоэлектрических систем),
+                            который не подается в публичную сеть, не включается в доступные данные.
+                            Данные включают потребление, измеренное на всех счетчиках с удаленным считыванием, установленных в сети,
+                            а также, поскольку не 100% счетчиков можно считать удаленно, данные об объемах подаваемой в сеть электроэнергии.
+                        </p>
+                        
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-12">
+                <div class="card h-100">
+                    <div class="card-header">
+                        <i class="fa-solid fa-table"></i> связанный источник данных
+                    </div>
+                    <div class="card-body">
+                        <h3 class="card-title">Кантональное потребление электроэнергии</h3>
+                        <p class="card-text">
+                            Этот набор данных содержит сумму электроэнергии в кантоне Базель-Штадт.
+                            извлекается из сети с интервалом 15 минут, включая потери в сети.
+                        </p>
+                        <p class="card-text"></p>
+                        Электрическая энергия, потребляемая локально непосредственно на месте производства (например, от фотоэлектрических систем),
+                        который не подается в публичную сеть, не включается в доступные данные.
+                        </p>
+                        <p class="card-text">
+                            Данные включают в себя потребление, измеренное на всех счетчиках с дистанционным считыванием, установленных в сети, а также:
+                            поскольку не 100% счетчиков можно считать удаленно, в сеть подаются данные об объемах электроэнергии.
+                        <p class="card-text">
+                            Примечание. Значения следующих времен начала измерений являются интерполированными: 01.01.2014 00:00, 11.01.2015 00:00 и 10.01.2019 00:00.
+                        </p>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br>
+        <div class="row d-flex align-items-stretch">
+            <div class="col-lg-6 col-md-12">
+                <div class="card h-100">
+                    <div class="card-header">
+                        <i class="fa-solid fa-code"></i> Исходный код
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">
+                            Весь исходный код, разработанный для этой информационной панели, доступен.
+                            <a href="https://github.com/----------------------" target="_blank">GitHub <i class="fa-brands fa-github"></i></a>
+                            доступный.
+                        </p>
+                        <p class="card-text">
+                            Последнее обновление этого приложения: 15 декабря 2023 г.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-12">
+                <div class="card h-100">
+                    <div class="card-header">
+                        <i class="fa-regular fa-circle-user"></i> обо мне
+                    </div>
+                    <div class="card-body">
+
+                        <p class="card-text">
+                            Меня зовут <b>Солиев Пайрав Хаёевич</b>. Я студент магистратуры в <b>СПбГЭТУ "ЛЭТИ"</b>
+                        </p>
+
+                        <p class="card-text">
+                            Если у вас есть какие-либо вопросы или комментарии, пожалуйста, свяжитесь со мной через Telegram
+                            <a href="https://t.me/sunrows" target="_blank"> Telegram<i class="fa-brands fa-telegram"></i></a> 
+                        
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript для рисования и обновления данных -->
+    <script src="js/mainnumbers.js"></script>
+    <script src="js/linechart.js"></script>
+    <script src="js/calendarheatmap.js"></script>
+    <script src="js/barchart.js"></script>
+    
+
+</body>
+
+</html>
